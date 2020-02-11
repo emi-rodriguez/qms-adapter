@@ -1,12 +1,8 @@
 const errors = require('@feathersjs/errors')
 const cache = require('../shared/cache')
-const cacheFake = []
 
 module.exports = (app) => {
   return {
-    async find (params) {
-      return cacheFake
-    },
     async create (params) {
       return cache
         .get(params.id)
@@ -28,21 +24,14 @@ module.exports = (app) => {
           }
         })
     },
-    async get (id, params) {
-      cache.get(id)
-    },
     async remove (id, params) {
       return cache
         .get(id)
         .then(response => {
           if (response) {
-            cache.set({
-              key: id,
-              value: response,
-              expires: app.get('gcp').cache.options.expires
-            })
+            cache.del(id)
             return {
-              message: 'Registro agendado para remoção'
+              message: 'Registro removido com sucesso'
             }
           } else {
             const error = new errors.NotFound('Registro não existe')

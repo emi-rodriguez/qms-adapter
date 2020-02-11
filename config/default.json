@@ -9,9 +9,7 @@
   "gcp":{
     "cache":{
       "options": {      
-        "port": 6379,
-        "url": "http://localhost:6379",
-        "expires": 60
+        "url": "http://localhost:6379"
       }
     }
   }

@@ -20,17 +20,18 @@ const getInstance = (ctx) => {
 }
 
 const set = (data) => {
-  const {
-    key,
-    value,
-    expires = undefined
-  } = data
-
-  if (expires) {
-    client.setex(key, expires, JSON.stringify(value))
-  } else {
-    client.set(key, JSON.stringify(value))
-  }
+  return new Promise((resolve, reject) => {
+    const {
+      key,
+      value
+    } = data
+    client.set(key, JSON.stringify(value), (error, response) => {
+      if (error) {
+        return reject(error)
+      }
+      return resolve(response)
+    })
+  })
 }
 
 const get = (key) => {
@@ -44,9 +45,21 @@ const get = (key) => {
   })
 }
 
+const del = (key) => {
+  return new Promise((resolve, reject) => {
+    client.del(key, (error, response) => {
+      if (error) {
+        return reject(error)
+      }
+      return resolve(response)
+    })
+  })
+}
+
 module.exports = {
   getInstance,
   connected,
   set,
-  get
+  get,
+  del
 }
