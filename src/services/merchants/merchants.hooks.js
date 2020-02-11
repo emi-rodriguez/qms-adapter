@@ -1,12 +1,12 @@
-const { validate } = require('../../../hooks/merchants')
-const { createInstance } = require('../../shared/cache/index')
+const { validate } = require('../../hooks/merchants')
+const { getInstance } = require('../shared/cache/index')
 
 module.exports = {
   before: {
-    all: [],
+    all: [getInstance],
     find: [],
     get: [],
-    create: [createInstance, validate],
+    create: [validate],
     update: [validate],
     patch: [],
     remove: []

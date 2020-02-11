@@ -1,13 +1,12 @@
-// Initializes the `qms-adapter/merchants` service on path `/qms-adapter/merchants`
 const merchants = require('./merchants.core')
 const hooks = require('./merchants.hooks')
 
-module.exports = function (app) {
+module.exports = (app) => {
   // Initialize our service with any options it requires
-  app.use('/qms-adapter/merchants', merchants(app))
+  app.use('/merchants', merchants(app))
 
   // Get our initialized service so that we can register hooks
-  const service = app.service('qms-adapter/merchants')
+  const service = app.service('/merchants')
 
   service.hooks(hooks)
 }

@@ -1,24 +1,43 @@
 const redis = require('redis')
 let client
 
-const createInstance = (ctx) => {
-  const option = {}
-  client = redis.createClient(ctx.app.get('gcp').cache.port, ctx.app.get('gcp').cache.url, option)
+const connected = () => client && client.connected
+
+const getInstance = (ctx) => {
+  if (connected()) {
+    return
+  }
+  client = redis
+    .createClient(ctx.app.get('gcp').cache.options)
 
   client.on('connect', () => {
     console.log('Cache connected')
   })
+
+  client.on('error', () => {
+    console.log('Cache connection error')
+  })
 }
 
-const set = (key, value) => {
-  client.set(key, JSON.stringify(value))
+const set = (data) => {
+  const {
+    key,
+    value,
+    expires = undefined
+  } = data
+
+  if (expires) {
+    client.setex(key, expires, JSON.stringify(value))
+  } else {
+    client.set(key, JSON.stringify(value))
+  }
 }
 
 const get = (key) => {
   return new Promise((resolve, reject) => {
     client.get(key, (error, response) => {
       if (error) {
-        reject(error)
+        return reject(error)
       }
       return resolve(JSON.parse(response))
     })
@@ -26,7 +45,8 @@ const get = (key) => {
 }
 
 module.exports = {
-  createInstance,
+  getInstance,
+  connected,
   set,
   get
 }

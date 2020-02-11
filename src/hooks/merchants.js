@@ -1,7 +1,7 @@
 const errors = require('@feathersjs/errors')
 const Ajv = require('ajv')
 const _ = require('lodash')
-const merchantSchema = require('../services/qms-adapter/merchants/merchants.schema')
+const merchantSchema = require('../services/merchants/merchants.schema')
 const validateSchema = new Ajv().compile(merchantSchema)
 const config = require('../../config/merchant')
 

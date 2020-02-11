@@ -4,8 +4,8 @@ const _ = require('lodash')
 const chai = require('chai')
 chai.use(require('chai-json-schema'))
 
-const app = require('../../../src/app')
-const schema = require('../../../src/services/qms-adapter/merchants/merchants.schema')
+const app = require('../../src/app')
+const schema = require('../../src/services/merchants/merchants.schema')
 
 const fakeRequest = {
   id: 'asdf123qwer',
@@ -30,7 +30,7 @@ const fakeRequest = {
 
 const callServiceFailure = (request, done) => {
   app
-    .service('qms-adapter/merchants')
+    .service('merchants')
     .create(request, {
       headers: {
         'content-type': 'application/json'
@@ -48,7 +48,7 @@ const callServiceFailure = (request, done) => {
 
 const callServiceSuccess = (request, done) => {
   app
-    .service('qms-adapter/merchants')
+    .service('merchants')
     .create(request, {
       headers: {
         'content-type': 'application/json'
@@ -59,14 +59,14 @@ const callServiceSuccess = (request, done) => {
       done()
     })
     .catch(error => {
-      chai.assert.isTrue(error.code === 500, 'Erro inesperado')
+      chai.assert.isTrue(error.code === 400, 'Erro esperado: Bad Request')
       done()
     })
 }
 
 mocha.describe('Rota de cadastro do cliente Stone', () => {
   mocha.it('Quando a aplicação for registrada', () => {
-    const service = app.service('qms-adapter/merchants')
+    const service = app.service('merchants')
 
     assert.ok(service, 'Serviço registrado com sucesso')
   })
@@ -76,9 +76,9 @@ mocha.describe('Rota de cadastro do cliente Stone', () => {
       .isTrue(chai.tv4
         .validate(clonedRequest, schema, true), 'O schema não foi validado')
   })
-  mocha.it('[POST] O request é válido', (done) => {
-    const rqWithValidPaymentType = _.cloneDeep(fakeRequest)
-    callServiceSuccess(rqWithValidPaymentType, done)
+  mocha.it('[POST] O reques já existe no cache', (done) => {
+    const rqExistentRequest = _.cloneDeep(fakeRequest)
+    callServiceSuccess(rqExistentRequest, done)
   })
   mocha.it('[POST] O request é inválido quando o payment_type é inválido', (done) => {
     const rqWithInvalidPaymentType = _.cloneDeep(fakeRequest)
@@ -120,7 +120,7 @@ mocha.describe('Rota de cadastro do cliente Stone', () => {
   })
   mocha.it('[POST] O request é inválido quando o header é inválido', (done) => {
     app
-      .service('qms-adapter/merchants')
+      .service('/merchants')
       .create(_.cloneDeep(fakeRequest), {
         headers: {
           'content-type': 'xml'

@@ -1,4 +1,4 @@
-const qmsAdapterMerchants = require('./qms-adapter/merchants/merchants.service.js')
+const qmsAdapterMerchants = require('./merchants/merchants.service.js')
 
 // eslint-disable-next-line no-unused-vars
 module.exports = function (app) {

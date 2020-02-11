@@ -8,8 +8,11 @@
   },
   "gcp":{
     "cache":{
-      "port": 6379,
-      "url": "localhost"
+      "options": {      
+        "port": 6379,
+        "url": "http://localhost:6379",
+        "expires": 60
+      }
     }
   }
 }
