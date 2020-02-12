@@ -8,7 +8,7 @@ const getInstance = (ctx) => {
     return
   }
   client = redis
-    .createClient(ctx.app.get('gcp').cache.options)
+    .createClient(process.env.CACHE_PORT, process.env.CACHE_HOST)
 
   client.on('connect', () => {
     console.log('Cache connected')
@@ -20,16 +20,19 @@ const getInstance = (ctx) => {
 }
 
 const set = (data) => {
+  const {
+    key,
+    value
+  } = data
   return new Promise((resolve, reject) => {
-    const {
-      key,
-      value
-    } = data
     client.set(key, JSON.stringify(value), (error, response) => {
       if (error) {
         return reject(error)
       }
-      return resolve(response)
+      return resolve({
+        code: response,
+        message: 'Registro atualizado com sucesso'
+      })
     })
   })
 }
@@ -51,7 +54,10 @@ const del = (key) => {
       if (error) {
         return reject(error)
       }
-      return resolve(response)
+      return resolve({
+        code: response,
+        message: 'Registro removido com sucesso'
+      })
     })
   })
 }

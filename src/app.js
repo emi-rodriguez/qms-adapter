@@ -36,4 +36,9 @@ app.use(express.errorHandler({ logger }))
 
 app.hooks(appHooks)
 
+if (!process.env.ENVIRONMENT ||
+    process.env.ENVIRONMENT !== 'PRODUCTION') {
+  require('dotenv').config()
+}
+
 module.exports = app

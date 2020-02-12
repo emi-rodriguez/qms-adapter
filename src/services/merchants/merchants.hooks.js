@@ -1,4 +1,4 @@
-const { validate } = require('../../hooks/merchants')
+const { validate, addEnvelope } = require('../../hooks/merchants')
 const { getInstance } = require('../shared/cache/index')
 
 module.exports = {
@@ -6,8 +6,8 @@ module.exports = {
     all: [getInstance],
     find: [],
     get: [],
-    create: [validate],
-    update: [validate],
+    create: [validate, addEnvelope],
+    update: [validate, addEnvelope],
     patch: [],
     remove: []
   },

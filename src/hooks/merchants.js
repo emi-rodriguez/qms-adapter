@@ -1,6 +1,7 @@
 const errors = require('@feathersjs/errors')
 const Ajv = require('ajv')
 const _ = require('lodash')
+const moment = require('moment')
 const merchantSchema = require('../services/merchants/merchants.schema')
 const validateSchema = new Ajv().compile(merchantSchema)
 const config = require('../../config/merchant')
@@ -51,6 +52,20 @@ const validate = (ctx) => {
   }
 }
 
+const addEnvelope = (ctx) => {
+  ctx.data = {
+    envelope: {
+      timestamp: moment().format('YYYY-MM-DD HH:mm:ss.SSSS Z'),
+      credentials: {
+        user: 'ctx.params.headers.user'
+      },
+      merchant: ctx.data
+    }
+  }
+  return ctx
+}
+
 module.exports = {
-  validate
+  validate,
+  addEnvelope
 }

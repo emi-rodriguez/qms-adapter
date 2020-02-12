@@ -5,59 +5,44 @@ module.exports = (app) => {
   return {
     async create (params) {
       return cache
-        .get(params.id)
+        .get(params.envelope.merchant.id)
         .then(response => {
           if (!response) {
-            cache.set({
-              key: params.id,
+            return cache.set({
+              key: params.envelope.merchant.id,
               value: params
             })
-            return {
-              message: 'Registro criado com sucesso',
-              code: 201,
-              data: params
-            }
-          } else {
-            const error = new errors.BadRequest('Registro já existe')
-            error.className = 'merchants.core'
-            throw error
           }
+          const error = new errors.BadRequest('Registro já existe')
+          error.className = 'merchants.core'
+          throw error
         })
     },
-    async remove (id, params) {
+    async remove (id) {
       return cache
         .get(id)
         .then(response => {
           if (response) {
-            cache.del(id)
-            return {
-              message: 'Registro removido com sucesso'
-            }
-          } else {
-            const error = new errors.NotFound('Registro não existe')
-            error.className = 'merchants.core'
-            throw error
+            return cache.del(id)
           }
+          const error = new errors.NotFound('Registro não existe')
+          error.className = 'merchants.core'
+          throw error
         })
     },
     async update (id, params) {
       return cache
         .get(id)
         .then(response => {
-          if (!response) {
-            const error = new errors.NotFound('Registro não existe')
-            error.className = 'merchants.core'
-            throw error
-          } else {
-            cache.set({
+          if (response) {
+            return cache.set({
               key: id,
               value: params
             })
-            return {
-              message: 'Registro atualizado com sucesso',
-              data: params
-            }
           }
+          const error = new errors.NotFound('Registro não existe')
+          error.className = 'merchants.core'
+          throw error
         })
     }
   }
