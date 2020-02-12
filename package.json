@@ -23,11 +23,13 @@
     "npm": ">= 3.0.0"
   },
   "scripts": {
-    "test": "npm run eslint && npm run mocha",
+    "test": "npm run mocha",
     "eslint": "eslint src/. test/. --config .eslintrc.json",
     "dev": "nodemon src/",
     "start": "node src/",
-    "mocha": "mocha test/ --recursive --exit"
+    "mocha": "mocha test/ --recursive --exit",
+    "coverage": "nyc npm run test&& npm run coverage:report",
+    "coverage:report": "nyc report --reporter=lcov --reporter=html"
   },
   "dependencies": {
     "@feathersjs/configuration": "^4.5.1",
@@ -52,7 +54,9 @@
     "chai-json-schema": "^1.5.1",
     "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
+    "istanbul": "^0.4.5",
     "mocha": "^6.2.2",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "nyc": "^15.0.0"
   }
 }

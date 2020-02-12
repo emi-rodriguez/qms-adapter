@@ -55,9 +55,9 @@ const validate = (ctx) => {
 const addEnvelope = (ctx) => {
   ctx.data = {
     envelope: {
-      timestamp: moment().format('YYYY-MM-DD HH:mm:ss.SSSS Z'),
+      timestamp: moment().format('YYYY-MM-DD HH:mm:ss.SSS Z'),
       credentials: {
-        user: 'ctx.params.headers.user'
+        username: ctx.params.headers.username
       },
       merchant: ctx.data
     }

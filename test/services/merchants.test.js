@@ -8,7 +8,7 @@ const app = require('../../src/app')
 const schema = require('../../src/services/merchants/merchants.schema')
 
 const fakeRequest = {
-  id: 'asdf123qwer',
+  id: '12qodaw233',
   stone_code: 12345,
   mcc: 1520,
   name: 'Cliente Stone',
@@ -76,7 +76,7 @@ mocha.describe('Rota de cadastro do cliente Stone', () => {
       .isTrue(chai.tv4
         .validate(clonedRequest, schema, true), 'O schema não foi validado')
   })
-  mocha.it('[POST] O reques já existe no cache', (done) => {
+  mocha.it('[POST] O request já existe no cache', (done) => {
     const rqExistentRequest = _.cloneDeep(fakeRequest)
     callServiceSuccess(rqExistentRequest, done)
   })

@@ -1,21 +1,24 @@
 const redis = require('redis')
+const { BadGateway } = require('@feathersjs/errors')
 let client
 
 const connected = () => client && client.connected
 
 const getInstance = (ctx) => {
-  if (connected()) {
-    return
-  }
-  client = redis
-    .createClient(process.env.CACHE_PORT, process.env.CACHE_HOST)
+  return new Promise((resolve, reject) => {
+    if (connected()) {
+      return resolve(ctx)
+    }
+    client = redis
+      .createClient(process.env.CACHE_PORT, process.env.CACHE_HOST)
 
-  client.on('connect', () => {
-    console.log('Cache connected')
-  })
+    client.on('connect', () => {
+      resolve(ctx)
+    })
 
-  client.on('error', () => {
-    console.log('Cache connection error')
+    client.on('error', (error) => {
+      reject(new BadGateway('An error occured when trying to connect to Redis', error))
+    })
   })
 }
 
