@@ -40,7 +40,7 @@ const createFailure = (request, done) => {
     })
 }
 
-const createSuccess = (request, done) => {
+const createCustomer = (request, done) => {
   app
     .service('merchants')
     .create(request, {
@@ -58,7 +58,7 @@ const createSuccess = (request, done) => {
     })
 }
 
-const updateFailure = (request, done) => {
+const updateCustomer = (request, done) => {
   app
     .service('merchants')
     .update(request.id, request, {
@@ -67,11 +67,29 @@ const updateFailure = (request, done) => {
       }
     })
     .then(response => {
-      chai.assert.isUndefined(response)
+      chai.assert.isObject(response)
       done()
     })
     .catch(error => {
-      chai.assert.isTrue(error.code === 400, 'Erro esperado: Bad Request')
+      chai.assert.isTrue(error.code === 400 || error.code === 404, error)
+      done()
+    })
+}
+
+const removeCustomer = (request, done) => {
+  app
+    .service('merchants')
+    .remove(request.id, request, {
+      headers: {
+        'content-type': 'application/json'
+      }
+    })
+    .then(response => {
+      chai.assert.isObject(response)
+      done()
+    })
+    .catch(error => {
+      chai.assert.isTrue(error.code === 400 || error.code === 404, error)
       done()
     })
 }
@@ -79,6 +97,7 @@ const updateFailure = (request, done) => {
 module.exports = {
   fakeRequest,
   createFailure,
-  createSuccess,
-  updateFailure
+  createCustomer,
+  updateCustomer,
+  removeCustomer
 }

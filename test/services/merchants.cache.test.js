@@ -5,8 +5,6 @@ const { connected, getInstance, set, get, del } = require('../../src/services/sh
 
 describe('Teste de conexão do cache', () => {
   /// Negative Scnearios
-  it('A conexão com o servidor falha quando inválida', () => {
-  })
   it('Quando uma inserção de cache com chave inválida', (done) => {
     getInstance()
       .then(() => {
