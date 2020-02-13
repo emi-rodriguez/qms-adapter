@@ -42,3 +42,9 @@ if (!process.env.ENVIRONMENT ||
 }
 
 module.exports = app
+
+// const assert = require('assert')
+// const { describe, it } = require('mocha')
+// const _ = require('lodash')
+// const chai = require('chai')
+// const { getInstance, set, get, del } = require('../src/services/shared/cache')
