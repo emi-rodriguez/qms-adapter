@@ -13,7 +13,7 @@ module.exports = (app) => {
               value: params
             })
           }
-          const error = new errors.BadRequest('Registro já existe')
+          const error = new errors.BadRequest('Data already exists')
           error.className = 'merchants.core'
           throw error
         })
