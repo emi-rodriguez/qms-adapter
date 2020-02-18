@@ -25,7 +25,7 @@ module.exports = (app) => {
           if (response) {
             return cache.del(id)
           }
-          const error = new errors.NotFound('Registro não existe')
+          const error = new errors.NotFound('The required registry was not found')
           error.className = 'merchants.core'
           throw error
         })
