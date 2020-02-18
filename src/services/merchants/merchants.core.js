@@ -40,7 +40,7 @@ module.exports = (app) => {
               value: params
             })
           }
-          const error = new errors.NotFound('Registro não existe')
+          const error = new errors.NotFound('The register does not exist')
           error.className = 'merchants.core'
           throw error
         })
