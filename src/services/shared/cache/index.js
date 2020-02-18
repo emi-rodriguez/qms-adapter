@@ -65,7 +65,7 @@ const del = (key) => {
       }
       return resolve({
         code: response,
-        message: 'Registro removido com sucesso'
+        message: 'Unregistered successfully'
       })
     })
   })
