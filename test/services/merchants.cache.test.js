@@ -3,9 +3,9 @@ const { describe, it } = require('mocha')
 const chai = require('chai')
 const { connected, getInstance, set, get, del } = require('../../src/services/shared/cache')
 
-describe('Teste de conexão do cache', () => {
+describe('Testing cache connection', () => {
   /// Negative Scnearios
-  it('Quando uma inserção de cache com chave inválida', (done) => {
+  it('Cache insertion with invalid key is blocked', (done) => {
     getInstance()
       .then(() => {
         set({
@@ -21,7 +21,7 @@ describe('Teste de conexão do cache', () => {
           })
       })
   })
-  it('Quando uma seleção de dados sem chave', (done) => {
+  it('Cache selection with no key is blocked', (done) => {
     getInstance()
       .then(() => {
         get(undefined)
@@ -32,7 +32,7 @@ describe('Teste de conexão do cache', () => {
           })
       })
   })
-  it('Quando inserção de cache com valor inválido', (done) => {
+  it('Cache insertion with invalid value is blocked', (done) => {
     getInstance()
       .then(() => {
         set({
@@ -46,7 +46,7 @@ describe('Teste de conexão do cache', () => {
           })
       })
   })
-  it('Quando uma exclusão com chave inválida', (done) => {
+  it('Cache removal with invalid key is blocked', (done) => {
     getInstance()
       .then(() => {
         del(undefined)
@@ -58,14 +58,14 @@ describe('Teste de conexão do cache', () => {
       })
   })
   /// Positive Scenarios
-  it('Quando a conexão com o servidor de cache estiver válida', (done) => {
+  it('Cache connection is valid and completes', (done) => {
     getInstance()
       .then(() => {
         done()
         chai.assert.isTrue(connected())
       })
   })
-  it('Quando uma inserção válida', (done) => {
+  it('Valid cache insertion completes', (done) => {
     getInstance()
       .then(() => {
         set({
@@ -84,7 +84,7 @@ describe('Teste de conexão do cache', () => {
           })
       })
   })
-  it('Quando uma seleção de cache válida', (done) => {
+  it('Valid cache selection completes', (done) => {
     getInstance()
       .then(() => {
         get('testCache')
@@ -98,7 +98,7 @@ describe('Teste de conexão do cache', () => {
           })
       })
   })
-  it('Quando uma exclusão de cache válida', (done) => {
+  it('Valid cache removal completes', (done) => {
     getInstance()
       .then(() => {
         del('testCache')

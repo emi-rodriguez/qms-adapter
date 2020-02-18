@@ -10,7 +10,7 @@ const validateSchema = (data) => {
   return new Promise((resolve, reject) => {
     return validSchema(data)
       ? resolve(data)
-      : reject(new Error('json schema'))
+      : reject(new Error('Invalid request. All fields must be compliant with json schema'))
   })
 }
 
@@ -19,79 +19,86 @@ const checkRequestHeaders = (headers) => {
     const isValid = headers['content-type'] === 'application/json'
     return (isValid)
       ? resolve(headers)
-      : reject(new Error('content-type'))
+      : reject(new Error('Invalid content-type. Request must be application/json'))
   })
 }
 
-const checkStoneCode = (data) => {
+const checkStoneCode = (stoneCode) => {
   return new Promise((resolve, reject) => {
-    const isValid = data.stone_code > 0
+    const isValid = stoneCode > 0
     return (isValid)
       ? resolve(data)
-      : reject(new Error('stone code'))
+      : reject(new Error('Invalid stone code'))
   })
 }
 
-const checkDocumentNumber = (data) => {
+const checkDocumentNumber = (documentNumber) => {
   return new Promise((resolve, reject) => {
-    const isValid = Number(data.document_number) > 0
+    const isValid = Number(documentNumber) > 0
     return (isValid)
       ? resolve(data)
-      : reject(new Error('document number'))
+      : reject(new Error('Invalid document number'))
   })
 }
 
-const checkMCC = (data) => {
+const checkMCC = (mcc) => {
   return new Promise((resolve, reject) => {
-    const isValid = Object.values(config.mccTypes).includes(data.mcc)
+    const isValid = Object.values(config.mccTypes).includes(mcc)
     return (isValid)
       ? resolve(data)
-      : reject(new Error('mcc'))
+      : reject(new Error('Invalid mcc'))
   })
 }
 
 const checkPaymentType = (paymentList) => {
   return new Promise((resolve, reject) => {
-    const isValid = paymentList.every((payment) => {
+    const isValid = [].concat(paymentList).every((payment) => {
       return Object.values(config.paymentModes).includes(payment.payment_type)
     })
     return (isValid)
       ? resolve(paymentList)
-      : reject(new Error('payment_type'))
+      : reject(new Error('Invalid payment_type'))
   })
 }
 
 const checkTransactionTypes = (data) => {
   const transactionList = _.flatten(data.payments_list.map(payment => { return payment.transactions }))
   return new Promise((resolve, reject) => {
-    const isValid = transactionList.every((transaction) => {
+    const isValid = [].concat(transactionList).every((transaction) => {
       return Object.values(config.transactionTypes).includes(transaction.transaction_type)
     })
     return (isValid)
       ? resolve(data)
-      : reject(new Error('transaction_type'))
+      : reject(new Error('Invalid transaction_type'))
   })
 }
 
 const checkFeeTypes = (data) => {
   const feeList = _.flatten(data.payments_list.map(payment => { return payment.transactions }))
   return new Promise((resolve, reject) => {
-    const isValid = feeList.every((fee) => {
+    const isValid = [].concat(feeList).every((fee) => {
       return Object.values(config.feeTypes).includes(fee.fee_type)
     })
     return (isValid)
       ? resolve(data)
-      : reject(new Error('fee_type'))
+      : reject(new Error('Invalid fee_type'))
   })
 }
 
 const validate = (ctx) => {
+  const {
+    payment_list,
+    mcc,
+    stone_code,
+    document_number
+  } = ctx.data
+
   return checkRequestHeaders(ctx.params.headers)
     .then(() => validateSchema(ctx.data))
-    .then(() => checkStoneCode(ctx.data))
-    .then(() => checkDocumentNumber(ctx.data))
-    .then(() => checkMCC(ctx.data))
-    .then(() => checkPaymentType(ctx.data.payments_list))
+    .then(() => checkStoneCode(stone_code))
+    .then(() => checkDocumentNumber(document_number))
+    .then(() => checkMCC(mcc))
+    .then(() => checkPaymentType(payment_list))
     .then(() => checkTransactionTypes(ctx.data))
     .then(() => checkFeeTypes(ctx.data))
     .then(() => {
@@ -108,7 +115,7 @@ const validate = (ctx) => {
 const addEnvelope = (ctx) => {
   ctx.data = {
     envelope: {
-      timestamp: moment().format('YYYY-MM-DD HH:mm:ss.SSS Z'),
+      timestamp: moment().format('YYYYMMDD HH:mm:ss.SSSZ'),
       credentials: {
         username: ctx.params.headers.username
       },

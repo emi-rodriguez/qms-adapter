@@ -8,19 +8,19 @@ const app = require('../../src/app')
 const schema = require('../../src/services/merchants/merchants.schema')
 const { fakeRequest, createFailure } = require('./appendix')
 
-describe('Validação dos dados das requisições', () => {
-  it('Registro da aplicação', () => {
+describe('Validation of requisition data', () => {
+  it('Application registration', () => {
     const service = app.service('merchants')
 
-    assert.ok(service, 'Serviço registrado com sucesso')
+    assert.ok(service, 'Service successfully registered')
   })
-  it('Validação do schema', () => {
+  it('Schema validation', () => {
     const clonedRequest = _.clone(fakeRequest)
     chai.assert
       .isTrue(chai.tv4
-        .validate(clonedRequest, schema, true), 'O schema não foi validado')
+        .validate(clonedRequest, schema, true), 'Schema is invalid')
   })
-  it('O request é inválido quando o payment_type é inválido', (done) => {
+  it('The request is invalid when payment_type is invalid', (done) => {
     const rqWithInvalidPaymentType = _.cloneDeep(fakeRequest)
     rqWithInvalidPaymentType.payments_list
       .map(payment => {
@@ -28,7 +28,7 @@ describe('Validação dos dados das requisições', () => {
       })
     createFailure(rqWithInvalidPaymentType, done)
   })
-  it('O request é inválido quando o transaction_type é inválido', (done) => {
+  it('Request is invalid when transaction_type is invalid', (done) => {
     const rqWithInvalidTransactionType = _.cloneDeep(fakeRequest)
     const transactionErrors = _.flatten(rqWithInvalidTransactionType.payments_list
       .map(payment => {
@@ -45,7 +45,7 @@ describe('Validação dos dados das requisições', () => {
       })
     createFailure(rqWithInvalidTransactionType, done)
   })
-  it('O request é inválido quando o fee_type é inválido', (done) => {
+  it('Request is invalid when fee_type is invalid', (done) => {
     const rqWithInvalidFeeType = _.cloneDeep(fakeRequest)
     const feeErrors = _.flatten(rqWithInvalidFeeType.payments_list
       .map(payment => {
@@ -58,7 +58,7 @@ describe('Validação dos dados das requisições', () => {
     rqWithInvalidFeeType.payments_list.map(payment => { payment.transactions = feeErrors })
     createFailure(rqWithInvalidFeeType, done)
   })
-  it('O request é inválido quando o header é inválido', (done) => {
+  it('Request is invalid when the content-type is invalid', (done) => {
     app
       .service('/merchants')
       .create(_.cloneDeep(fakeRequest), {
@@ -75,17 +75,17 @@ describe('Validação dos dados das requisições', () => {
         done()
       })
   })
-  it('O request é inválido quando o stone_code é inválido', (done) => {
+  it('The request is invalid when stone_code is invalid', (done) => {
     const rqWithInvalidStoneCode = _.cloneDeep(fakeRequest)
     rqWithInvalidStoneCode.stone_code = 'x'
     createFailure(rqWithInvalidStoneCode, done)
   })
-  it('O request é inválido quando o mcc é inválido', (done) => {
+  it('The request is invalid when mcc is invalid', (done) => {
     const rqWithInvalidMCC = _.cloneDeep(fakeRequest)
     rqWithInvalidMCC.mcc = 'x'
     createFailure(rqWithInvalidMCC, done)
   })
-  it('O request é inválido quando o document_number é inválido', (done) => {
+  it('The request is invalid when document_number is invalid', (done) => {
     const rqWithInvalidDocumentNumber = _.cloneDeep(fakeRequest)
     rqWithInvalidDocumentNumber.document_number = 'x'
     createFailure(rqWithInvalidDocumentNumber, done)
