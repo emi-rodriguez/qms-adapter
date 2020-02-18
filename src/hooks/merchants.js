@@ -27,7 +27,7 @@ const checkStoneCode = (stoneCode) => {
   return new Promise((resolve, reject) => {
     const isValid = stoneCode > 0
     return (isValid)
-      ? resolve(data)
+      ? resolve(stoneCode)
       : reject(new Error('Invalid stone code'))
   })
 }
@@ -36,7 +36,7 @@ const checkDocumentNumber = (documentNumber) => {
   return new Promise((resolve, reject) => {
     const isValid = Number(documentNumber) > 0
     return (isValid)
-      ? resolve(data)
+      ? resolve(documentNumber)
       : reject(new Error('Invalid document number'))
   })
 }
@@ -45,7 +45,7 @@ const checkMCC = (mcc) => {
   return new Promise((resolve, reject) => {
     const isValid = Object.values(config.mccTypes).includes(mcc)
     return (isValid)
-      ? resolve(data)
+      ? resolve(mcc)
       : reject(new Error('Invalid mcc'))
   })
 }
