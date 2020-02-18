@@ -40,7 +40,7 @@ const set = (data) => {
       }
       return resolve({
         code: response,
-        message: 'Registro atualizado com sucesso'
+        message: 'Registry successfully updated'
       })
     })
   })
