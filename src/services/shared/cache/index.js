@@ -1,24 +1,26 @@
 const redis = require('redis')
 const { BadGateway, GeneralError } = require('@feathersjs/errors')
-let client
 
-const connected = () => client && client.connected
+const checkCacheConnection = (ctx) => {
+  if (!(ctx.app.get('redisConnection') && ctx.app.get('redisConnection').connected)) {
+    const error = new BadGateway('Cache connection failed')
+    error.className = 'shared/cache'
+    throw error
+  }
+  return ctx
+}
 
-const getInstance = (ctx) => {
-  return new Promise((resolve, reject) => {
-    if (connected()) {
-      return resolve(ctx)
-    }
-    client = redis
-      .createClient(process.env.CACHE_PORT, process.env.CACHE_HOST)
-
-    client.on('connect', () => {
-      resolve(ctx)
-    })
-
-    client.on('error', (error) => {
-      reject(new BadGateway('An error occured when trying to connect to Redis', error))
-    })
+const createInstance = (app) => {
+  const client = redis
+    .createClient(
+      process.env.CACHE_PORT,
+      process.env.CACHE_HOST)
+  client.on('connect', () => {
+    app.set('redisConnection', client)
+    console.log('cache connected')
+  })
+  client.on('error', (error) => {
+    console.log(`cache connection error: ${error}`)
   })
 }
 
@@ -28,13 +30,13 @@ const getInstance = (ctx) => {
  * @param {value} value value for insert on cache
  */
 
-const set = (data) => {
+const set = (app) => (data) => {
   const {
     key,
     value
   } = data
   return new Promise((resolve, reject) => {
-    client.set(key, JSON.stringify(value), (error, response) => {
+    app.get('redisConnection').set(key, JSON.stringify(value), (error, response) => {
       if (error) {
         return reject(new GeneralError(error))
       }
@@ -46,9 +48,9 @@ const set = (data) => {
   })
 }
 
-const get = (key) => {
+const get = (app) => (key) => {
   return new Promise((resolve, reject) => {
-    client.get(key, (error, response) => {
+    app.get('redisConnection').get(key, (error, response) => {
       if (error) {
         return reject(new GeneralError(error))
       }
@@ -57,9 +59,9 @@ const get = (key) => {
   })
 }
 
-const del = (key) => {
+const del = (app) => (key) => {
   return new Promise((resolve, reject) => {
-    client.del(key, (error, response) => {
+    app.get('redisConnection').del(key, (error, response) => {
       if (error) {
         return reject(new GeneralError(error))
       }
@@ -72,8 +74,8 @@ const del = (key) => {
 }
 
 module.exports = {
-  getInstance,
-  connected,
+  createInstance,
+  checkCacheConnection,
   set,
   get,
   del

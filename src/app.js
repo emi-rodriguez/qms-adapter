@@ -10,6 +10,7 @@ const express = require('@feathersjs/express')
 const middleware = require('./middleware')
 const services = require('./services')
 const appHooks = require('./app.hooks')
+const { createInstance } = require('./services/shared/cache')
 
 const app = express(feathers())
 
@@ -36,15 +37,11 @@ app.use(express.errorHandler({ logger }))
 
 app.hooks(appHooks)
 
+app.configure(createInstance)
+
 if (!process.env.ENVIRONMENT ||
     process.env.ENVIRONMENT !== 'PRODUCTION') {
   require('dotenv').config()
 }
 
 module.exports = app
-
-// const assert = require('assert')
-// const { describe, it } = require('mocha')
-// const _ = require('lodash')
-// const chai = require('chai')
-// const { getInstance, set, get, del } = require('../src/services/shared/cache')

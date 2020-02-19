@@ -87,7 +87,7 @@ const checkFeeTypes = (data) => {
 
 const validate = (ctx) => {
   const {
-    payment_list,
+    payments_list,
     mcc,
     stone_code,
     document_number
@@ -98,7 +98,7 @@ const validate = (ctx) => {
     .then(() => checkStoneCode(stone_code))
     .then(() => checkDocumentNumber(document_number))
     .then(() => checkMCC(mcc))
-    .then(() => checkPaymentType(payment_list))
+    .then(() => checkPaymentType(payments_list))
     .then(() => checkTransactionTypes(ctx.data))
     .then(() => checkFeeTypes(ctx.data))
     .then(() => {

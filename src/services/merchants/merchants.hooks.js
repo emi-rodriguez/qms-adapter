@@ -1,9 +1,9 @@
 const { validate, addEnvelope } = require('../../hooks/merchants')
-const { getInstance } = require('../shared/cache/index')
+const { checkCacheConnection } = require('../shared/cache/index')
 
 module.exports = {
   before: {
-    all: [getInstance],
+    all: [checkCacheConnection],
     find: [],
     get: [],
     create: [validate, addEnvelope],
